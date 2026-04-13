@@ -417,6 +417,53 @@ class PinboardClient:
         self._query_cache[cache_key] = matches
         return matches
 
+    async def add_bookmark(
+        self,
+        url: str,
+        title: str,
+        description: str = "",
+        tags: list[str] | None = None,
+        shared: bool = True,
+        toread: bool = False,
+        replace: bool = True,
+    ) -> dict[str, Any]:
+        """Add or update a bookmark."""
+
+        def _add() -> dict[str, Any]:
+            self._rate_limit_sync()
+            self._pb.posts.add(
+                url=url,
+                description=title,
+                extended=description,
+                tags=tags or [],
+                shared=shared,
+                toread=toread,
+                replace=replace,
+            )
+            return {"result": "done", "url": url}
+
+        result = await self._run_in_executor(_add)
+        # Invalidate cache so new bookmark appears immediately
+        self._bookmark_cache = None
+        self._cache_valid_until = None
+        self._query_cache.clear()
+        return result
+
+    async def delete_bookmark(self, url: str) -> dict[str, Any]:
+        """Delete a bookmark by URL."""
+
+        def _delete() -> dict[str, Any]:
+            self._rate_limit_sync()
+            self._pb.posts.delete(url=url)
+            return {"result": "done", "url": url}
+
+        result = await self._run_in_executor(_delete)
+        # Invalidate cache
+        self._bookmark_cache = None
+        self._cache_valid_until = None
+        self._query_cache.clear()
+        return result
+
     async def close(self) -> None:
         """Close the client and clean up resources."""
         self._executor.shutdown(wait=True)

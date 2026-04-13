@@ -151,16 +151,58 @@ async def list_tags() -> list[dict[str, Any]]:
     return [tag.model_dump() for tag in tags]
 
 
+@mcp.tool
+async def add_bookmark(
+    url: str,
+    title: str,
+    description: str = "",
+    tags: list[str] | None = None,
+    shared: bool = True,
+    toread: bool = False,
+    replace: bool = True,
+) -> dict[str, Any]:
+    """Add or update a bookmark.
+
+    Args:
+        url: URL to bookmark
+        title: Title of the bookmark
+        description: Extended notes (optional)
+        tags: List of tags (optional)
+        shared: Whether the bookmark is public (default True)
+        toread: Mark as unread/to-read (default False)
+        replace: Replace if URL already exists (default True)
+    """
+    return await client.add_bookmark(
+        url=url,
+        title=title,
+        description=description,
+        tags=tags or [],
+        shared=shared,
+        toread=toread,
+        replace=replace,
+    )
+
+
+@mcp.tool
+async def delete_bookmark(url: str) -> dict[str, Any]:
+    """Delete a bookmark by URL.
+
+    Args:
+        url: URL of the bookmark to delete
+    """
+    return await client.delete_bookmark(url=url)
+
+
 def main() -> None:
     """Main entry point."""
     global client
 
     try:
-        # Get Pinboard API token
-        token = os.getenv("PINBOARD_TOKEN")
+        # Get Pinboard API token (accepts PINBOARD_TOKEN or PINBOARD_API_TOKEN)
+        token = os.getenv("PINBOARD_TOKEN") or os.getenv("PINBOARD_API_TOKEN")
         if not token:
             print(
-                "Error: PINBOARD_TOKEN environment variable is required",
+                "Error: PINBOARD_TOKEN or PINBOARD_API_TOKEN environment variable is required",
                 file=sys.stderr,
             )
             sys.exit(1)
