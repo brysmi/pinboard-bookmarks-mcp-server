@@ -161,7 +161,8 @@ async def add_bookmark(
     toread: bool = False,
     replace: bool = True,
 ) -> dict[str, Any]:
-    """Add or update a bookmark.
+    """Add or update a bookmark. Also serves as update — with replace=True (default),
+    calling this on an existing URL overwrites its title, notes, tags, and settings.
 
     Args:
         url: URL to bookmark

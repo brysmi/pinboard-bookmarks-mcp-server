@@ -128,8 +128,8 @@ List all tags with their usage counts.
 
 ### Write tools
 
-#### `add_bookmark`
-Add a new bookmark or update an existing one.
+#### `add_bookmark` / update bookmark
+Add a new bookmark or update an existing one. With `replace=True` (the default), calling this on an existing URL overwrites its title, notes, tags, and settings in place — there is no separate update tool.
 
 **Parameters:**
 - `url` (string): URL to bookmark
