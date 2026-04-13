@@ -6,7 +6,7 @@ This directory contains example configurations for integrating the Pinboard MCP 
 
 1. **Install the Pinboard MCP Server** (if not already installed):
    ```bash
-   pip install pinboard-mcp-server
+   pip install git+https://github.com/brysmi/pinboard-bookmarks-mcp-server.git
    ```
 
 2. **Get your Pinboard API token**:
@@ -91,6 +91,16 @@ Once configured, you can test the integration by asking Claude:
    What are my most used bookmark tags?
    ```
 
+5. **Add a bookmark**:
+   ```
+   Add a bookmark for https://example.com titled "Example Site" with tags python and reference
+   ```
+
+6. **Delete a bookmark**:
+   ```
+   Delete my bookmark for https://example.com
+   ```
+
 ## Troubleshooting
 
 ### Common Issues
@@ -141,7 +151,7 @@ Server logs are typically available in:
 
 - Never commit your actual Pinboard token to version control
 - Consider using environment variable substitution if your system supports it
-- The server only requests read-only access to your Pinboard data
+- The server has read and write access to your Pinboard data — it can add and delete bookmarks
 - Tokens are never logged or exposed in error messages
 
 ## Advanced Configuration
